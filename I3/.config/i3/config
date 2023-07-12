@@ -1,0 +1,297 @@
+#Archivo de configuracion i3wm
+#Editado por: Niil78
+#
+# i3 gaps
+for_window [class="^.*"] border pixel 1
+gaps inner 4 
+gaps outer 5 
+
+## implementacion de KDE en i3wm
+
+exec --no-startup-id plasma-desktop
+exec --no-startup-id kwin
+exec --no-startup-id plasma-desktop
+exec --no-startup-id plasmashell
+
+for_window [title="Desktop — Plasma"] kill, floating enable, border none
+for_window [title="Escritorio — Plasma"] kill, floating enable, border none
+for_window [title="Escritorio @ QRect(0,0 2560x1440)  — Plasma"] kill, floating enable, border none
+for_window [class="plasmashell"] floating enable, border none
+for_window [class="Plasma"] floating enable, border none
+for_window [title="plasma-Escritorio"] floating enable, border none
+for_window [title="plasma-desktop"] floating enable, border none
+for_window [title="win7"] floating enable, border none
+for_window [class="krunner"] floating enable, border none
+for_window [class="Kmix"] floating enable, border none
+for_window [class="Klipper"] floating enable, border none
+for_window [class="Plasmoidviewer"] floating enable, border none
+for_window [class="(?i)*nextcloud*"] floating disable
+for_window [class="plasmashell" window_type="notification"] floating enable, border none, move position center, move down 450px
+no_focus [class="plasmashell" window_type="notification"] 
+
+#
+#Aplicaciones
+#
+
+#Navegador
+bindsym $mod + N exec brave-browser-nightly  #--profile-directory="Profile 1"
+
+#Seleccionar Navegador
+set $mode_navegador (B) Brave (L) LibreWolf (F) Firefox (T) Tor
+mode "$mode_navegador" {
+bindsym b exec brave, mode "default"
+bindsym l exec librewolf, mode "default"
+bindsym f exec firefox, mode "default"
+bindsym t exec tor-browser, mode "default"
+
+bindsym Return mode "default"
+bindsym Escape mode "default"
+}
+
+### SCREENSHOT
+##bindsys $mod+Shift+S exec flameshot gui
+bindsym Print exec flameshot gui
+
+#Menu Navegadores
+bindsym $mod+shift+n mode "$mode_navegador"
+
+#Editor
+bindsym $mod + B exec subl
+#Archivador
+bindsym $mod + Y exec dolphin --platformtheme qt5ct
+
+# Documentacion > https://i3wm.org/docs/userguide.html
+
+set $mod Mod4
+
+#fondo de pantalla
+#exec --no-startup-id feh --bg-fill /home/niil/Documents/Fotos/wall.jpg
+#exec --no-startup-id glava --desktop
+
+# Autostart i3lock
+#exec --no-startup-id sleep 1 && i3lock-fancy-rapid 5 3
+set $Locker i3lock-fancy-rapid 5 3 && sleep 1
+
+#Cosas que se ejecutan al incio
+exec --no-startup-id kdeconnect-indicator
+# exec --no-startup-id picom --config /home/niil/.config/picom/picom.conf
+exec --no-startup-id dropbox
+#exec --no-startup-id spotify
+#exec --no-startup-id coolero
+exec --no-startup-id nitrogen --restore &
+
+
+#exec --no-startup-id dunst
+
+exec --no-startup-id knotification-daemon
+exec --no-startup-id knotify5 &
+exec_always --no-startup-id env XDG_CURRENT_DESKTOP=KDE notify-osd
+
+exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1
+set $mode_system (C)Cancelar apagado (L)Bloquear (E)Desloguear (S)Suspender (H)Hibernar (R)Reiniciar (*)Apagar (T)Apagado temporizado
+#set $mode_system  (l) lock,  (e) logout,  (s) suspend,  (h) hibernate,  (r) reboot,  (*) shutdown, (t) Shutdown -t 3600
+mode "$mode_system" {
+    set $Locker i3lock-fancy-rapid 5 3 && sleep 1
+    bindsym l exec --no-startup-id $Locker, mode "default"
+    bindsym e exec --no-startup-id i3-msg exit, mode "default"
+    bindsym s exec --no-startup-id systemctl suspend, mode "default"
+    bindsym h exec --no-startup-id $Locker && systemctl hibernate, mode "default"
+    bindsym r exec --no-startup-id systemctl reboot, mode "default"
+    bindsym * exec --no-startup-id systemctl poweroff -i, mode "default"  
+    bindsym t exec --no-startup-id shutdown +100 "Apagado Programado" , mode "default"
+    bindsym c exec --no-startup-id shutdown -c "Apagado Cancelado", mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+# Atajo Administrador Systema
+bindsym $mod+e mode "$mode_system"
+
+# Administrador de pantallas.
+#set $mode_display Pantallas:  (1) Primario,  (2)Secundario,  (3) espejo, (4) Wallpaper
+#mode "$mode_display" {
+#    bindsym 1 exec --no-startup-id mons -o, mode "default"
+#    bindsym 2 exec --no-startup-id mons -s, mode "default"
+#    bindsym 3 exec --no-startup-id mons -m, mode "default"
+#    bindsym 4 exec --no-startup-id feh --bg-fill /home/niil/Documents/Fotos/wall.jpg, mode "default"
+
+    # Volver a la normalidad
+#    bindsym Return mode "default"
+#    bindsym Escape mode "default"
+#}
+
+# Administrador de Discos
+set $mode_display Pantallas:  (1) sdb1 (Archivos),  (2)sdb1 (Windows),
+mode "$mode_display" {
+    bindsym 1 exec udisksctl mount -b /dev/sdb1, mode "default"
+    bindsym 2 exec udisksctl mount -b /dev/sdb1, mode "default"
+
+    # Volver a la normalidad
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+x mode "$mode_display"
+
+
+# Font para titulos.
+#font pango:monospace 8
+#font pango:DejaVu Sans Mono 8
+#font hack:Hack-regular 8
+font pango:DejaVu Sans Mono, FontAwesome 7
+
+#Salvapantallas
+#exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+
+# NetworkManager < Meter mano aqui
+#exec --no-startup-id nm-applet --sm-disable
+
+# Multimedia
+set $refresh_i3status killall -SIGUSR1 i3status
+ bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+#Inciar una terminal
+#Windows + Enter
+bindsym $mod+Return exec alacritty
+# Matar ventana
+#Windows + Q
+bindsym $mod+q kill
+
+#dmenu Lanzador de programas
+#Windows + D
+##bindsym $mod+d exec --no-startup-id "rofi -show drun -font \\"DejaVu 9\\" -run-shell-command '{terminal} -e \\" {cmd}; read -n 1 -s\\"'"
+bindsym $mod+d exec --no-startup-id ~/.config/rofi/launchers/type-2/launcher.sh
+
+
+#Cambiar foco
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+#Mover foco
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+#Partir pantalla
+bindsym $mod+h split h
+bindsym $mod+v split v
+
+#Pantalla completa
+bindsym $mod+f fullscreen toggle
+
+#Modos de pantalla
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+c layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+#bindsym $mod+d focus child
+
+# Cambio zona de trabajo
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+
+
+
+
+# Mover ventana a zona de trabajo
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+
+
+# recargar configuracion
+bindsym $mod+Shift+c reload
+
+# Reiniciar i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+
+# exit i3 (logs you out of your X session)
+#bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+## ZONA BARRA ##
+
+bar {
+    position bottom
+    status_command xmobar .config/xmobar/xmobarrc
+}
+
+
+#set $transparent #00000080
+#bar {
+#       status_command py3status -c /etc/i3status.conf
+#	status_command i3status
+#	output DP-2
+#	i3bar_command i3bar -t
+#	colors {
+#		background $transparent
+#	        #statusline #eeeeee
+#		separator #00000080
+#                #                   border    backgr.     text
+#                focused_workspace  #00000080 #00000080   #EF5937
+#                active_workspace   #00000080 #00000080   #ffffff
+#                inactive_workspace #00000080 #00000080   #ffffff70
+#                urgent_workspace   #00000080 #00000080   #FE1B00 }
+#
+#}
+
+#### PALETA DE COLORES ### > https://thomashunter.name/i3-configurator/
+# class                 border      bground      text    indicator   child_border
+#client.focused          #cccccc30   #96969680   #FFFFFF  #cccccc20    #cccccc10
+#client.focused_inactive #96969680   #96969680   #FFFFFF  #cccccc20    #cccccc00
+#client.unfocused        #333333     #222222     #888888  #cccccc20    #cccccc00
+#client.urgent           #2F343A     #96969620   #FFFFFF  #96969620    #96969620
+#client.placeholder      #000000     #0C0C0C     #FFFFFF  #000000      #0C0C0C
+#client.background       #FFFFFF
+
+#
+#Editado y traducido por Niil78
+#
+#ffffff

@@ -1,0 +1,132 @@
+Config {
+
+   -- Apariencia
+     font =         "Bitstream Vera Sans Mono Bold 9"
+   , bgColor =      "black"
+   , fgColor =      "#646464"
+   --, position =     Bottom
+   , position = Static { xpos = 0, ypos = 1425, width = 2560, height = 20 }
+   , border =       BottomB
+   , borderColor =  "#646464"
+
+   -- layout
+   , sepChar =  "#"   -- delineator between plugin names and straight text
+   , alignSep = "}{"  -- separator between left-right alignment
+
+   , template = "#StdinReader# }  #multicpu# | <fc=green>:</fc> #GpuUtil#% | #coretemp# | <fc=green>:</fc> #GpuTemp#° | #memory# |#bluetooth#| #eno1# <fc=purple>󱎃</fc> #tor0#  #musica# { #LETO# | #date# || #volume# || #trayerpad#"
+
+   -- general
+   , lowerOnStart =     True    -- send to bottom of window stack on start
+   , hideOnStart =      False   -- start with window unmapped (hidden)
+   , allDesktops =      True    -- show on all desktops
+   , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
+   , pickBroadest =     False   -- choose widest display (multi-monitor)
+   , persistent =       True    -- enable/disable hiding (True = disabled)
+
+   , commands =
+
+
+        [Run StdinReader
+
+        -- weather monitor
+        , Run WeatherX "LETO" [
+                                ("clear", "<fc=#ffff00><fn=1>\xfaa7</fn></fc>")
+                                , ("sunny", "<fc=#ffff00><fn=1>\xe30d</fn></fc>")
+                                , ("mostly clear", "<fc=#ffff00><fn=1>\xfaa7</fn></fc>")
+                                , ("mostly sunny", "<fc=#ffff00><fn=1>\xfaa7</fn></fc>")
+                                , ("partly sunny", "<fc=#ffff00><fn=1>\xe30d</fn></fc>")
+                                , ("fair", "<fc=#ffff00><fn=1>\xe30d</fn></fc>")
+                                , ("cloudy","<fc=#c0c0c0><fn=1>\xe312</fn></fc>")
+                                , ("overcast","<fc=#ffff5f><fn=1>\xe30c</fn></fc>")
+                                , ("partly cloudy", "<fc=#c0c0c0><fn=1>\xe312</fn></fc>")
+                                , ("mostly cloudy", "<fc=#c0c0c0><fn=1>\xe312</fn></fc>")
+                                , ("considerable cloudiness", "<fc=#c0c0c0><fn=1>\xe312</fn></fc>")
+                             ]
+                             [ "-t", "<skyConditionS> <tempC>° <fc=#00ffff>\xe373</fc> <rh>%" ] 18000
+
+          -- , Run Com "/usr/bin/python3" ["-c", "mediaplayer.py"] "music" 10
+
+          , Run Com "/bin/sh" ["-c","~/.config/xmobar/bin/bluetooth.sh" ] "bluetooth" 10
+
+          , Run Com "/bin/sh" ["-c","~/.config/xmobar/bin/playerctl.sh"] "musica" 10
+
+          , Run Com "/bin/sh" ["-c", "~/.config/xmobar/bin/trayer-padding-icon.sh"] "trayerpad" 600
+
+          , Run Com "/bin/sh" ["-c","~/.config/xmobar/bin/volume.sh"] "volume" 5
+
+          , Run Network "eno1" ["-t", "<fc=red> <tx></fc>|<fc=green> <rx></fc>"] 10
+          , Run Network "tor0" ["-t", "<fc=red> <tx></fc>|<fc=green> <rx></fc>"] 10
+        -- network activity monitor (dynamic interface resolution)
+
+
+        --, Run DynNetwork     [ "--template" , "<fc=green> <tx></fc>|<fc=red> <rx></fc>"
+        --                     , "--Low"      , "1000"       -- units: B/s
+        --                     , "--High"     , "5000"       -- units: B/s
+        --                     , "--low"      , "darkgreen"
+        --                     , "--normal"   , "darkorange"
+        --                     , "--high"     , "darkred"
+        --                     ] 10
+
+        -- Monitor de CPU
+        , Run MultiCpu      [ "--template" , "<fc=green>󰻠:</fc> <total0>%"
+                            , "--Low"      , "50"       -- unidades: %
+                            , "--High"     , "85"       -- unidades: %
+                            , "--low"      , "darkgreen"
+                            , "--normal"   , "darkorange"
+                            , "--high"     , "darkred"
+                            ] 50
+
+
+        -- Nvidia GPU Temperature
+        , Run Com "/usr/bin/nvidia-smi" ["--query-gpu=temperature.gpu", "--format=csv,noheader,nounits"] "GpuTemp" 10
+
+        -- Módulo de utilización de la GPU
+        , Run Com "/usr/bin/nvidia-smi" ["--query-gpu=utilization.gpu", "--format=csv,noheader,nounits"] "GpuUtil" 10
+
+        -- Temperaturas Cores
+        , Run CoreTemp      [ "--template" , "<fc=green>󰻠:</fc> <core0>°"
+                            , "--Low"      , "70"        -- unidades: °C
+                            , "--High"     , "80"        -- unidades: °C
+                            , "--low"      , "darkgreen"
+                            , "--normal"   , "darkorange"
+                            , "--high"     , "darkred"
+                            ] 50
+
+        -- memory usage monitor
+        , Run Memory         [ "--template" ,"<fc=green>󰑹:</fc> <usedratio>%"
+                             , "--Low"      , "20"        -- units: %
+                             , "--High"     , "90"        -- units: %
+                             , "--low"      , "darkgreen"
+                             , "--normal"   , "darkorange"
+                             , "--high"     , "darkred"
+                             ] 60
+
+        -- battery monitor
+        , Run Battery        [ "--template" , ": <acstatus>"
+                             , "--Low"      , "10"        -- units: %
+                             , "--High"     , "80"        -- units: %
+                             , "--low"      , "darkred"
+                             , "--normal"   , "darkorange"
+                             , "--high"     , "darkgreen"
+
+                             , "--" -- battery specific options
+                                       -- discharging status
+                                       , "-o"	, "󱧦<left>% (<timeleft>)"
+                                       -- AC "on" status
+                                       , "-O"	, "<fc=#dAA520>󰢝</fc>"
+                                       -- charged status
+                                       , "-i"	, "<fc=#006000>󰁹/fc>"
+                             ] 50
+
+        -- time and date indicator
+        --   (%F = y-m-d date, %a = day of week, %T = h:m:s time)
+        , Run Date           "<fc=#ABABAB>(%d %b %Y) %T</fc>" "date" 600
+        --, Run Date              "  %d %b %Y %H:%M " "date" 600,
+
+        -- keyboard layout indicator
+        , Run Kbd            [ ("us(dvorak)" , "<fc=#00008B>DV</fc>")
+                             , ("us"         , "<fc=#8B0000>US</fc>")
+                             ]
+
+        ]
+   }
