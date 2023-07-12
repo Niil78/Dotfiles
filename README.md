@@ -1,4 +1,5 @@
-# Estos son mis DotsFiles.
+<h1 align="center"> Mis DotFiles</h1>
+<center>LastEdit : Jul/2023</center>
 
 
 # ¿Que puedes encontrar Aqui?
@@ -6,17 +7,18 @@ Aqui encontraras distintas configuraciones para distintos entornos, Todos creado
 
 # EN CONSTRUCCION
 
+<h1 align="center"> I3WM + KDE [PY3STATUS]</h1>
 
-# I3WM + KDE
-[!I3 + KDE](.ScreenShots/i3 + KDE.png)
+![I3 + KDE](ScreenShots/i3+KDE.png)
 
-# HyprLand
+<h1 align="center"> HYPERLAND [WAYBAR]</h1>
 No recomiendo utilizar Hyprland (Wayland) Si tienes una tarjeta grafica Nvidia.
 
-[!HYPERLAND](.ScreenShots/Hyperland.png)
+![HYPERLAND](ScreenShots/Hyprland.png)
 
-# XMonad
-[XMONAD](.ScreenShots/Xmonad.png)
+<h1 align="center"> XMONAD [XMOBAR]</h1>
+
+![XMONAD](ScreenShots/Xmonad.png)
 
 
 
