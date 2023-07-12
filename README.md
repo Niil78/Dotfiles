@@ -9,16 +9,16 @@ Aqui encontraras distintas configuraciones para distintos entornos, Todos creado
 
 <h1 align="center"> I3WM + KDE [PY3STATUS]</h1>
 
-![I3 + KDE](ScreenShots/i3+KDE.png)
+![I3 + KDE](screenshots/i3+KDE.png)
 
 <h1 align="center"> HYPERLAND [WAYBAR]</h1>
 No recomiendo utilizar Hyprland (Wayland) Si tienes una tarjeta grafica Nvidia.
 
-![HYPERLAND](ScreenShots/Hyprland.png)
+![HYPERLAND](screenshots/Hyprland.png)
 
 <h1 align="center"> XMONAD [XMOBAR]</h1>
 
-![XMONAD](ScreenShots/Xmonad.png)
+![XMONAD](screenshots/Xmonad.png)
 
 
 
